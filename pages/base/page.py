@@ -27,7 +27,10 @@ class BasePage:
             return None
         return element
     
-    def move_to(self, target_title: str):
+    def go_to_url(self, url: str):
+        self.driver.get(url)
+
+    def switch_window(self, target_title: str):
         # https://www.selenium.dev/documentation/webdriver/browser_manipulation/
         # window_handle은 브라우저 타이틀 X => 아래와 같은 고유 ID를 가짐
         # CDwindow-5B3C6A7CFB7405E93DF9899E9AF87311
@@ -51,6 +54,9 @@ class BasePage:
                     return
 
         print('No such title:', target_title)
+
+    def wait_to_see(self, *locator):
+        self.wait.until(EC.presence_of_element_located(locator))
 
     def wait_to_click(self, *locator):
         self.wait.until(EC.element_to_be_clickable(locator))
