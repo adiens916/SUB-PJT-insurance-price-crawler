@@ -55,10 +55,10 @@ class BasePage:
 
         print('No such title:', target_title)
 
-    def wait_to_see(self, *locator):
+    def wait_to_see(self, locator):
         self.wait.until(EC.presence_of_element_located(locator))
 
-    def wait_to_click(self, *locator):
+    def wait_to_click(self, locator):
         self.wait.until(EC.element_to_be_clickable(locator))
 
     def make_directory(self, dir_path):
