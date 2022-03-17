@@ -1,4 +1,3 @@
-from calendar import month
 from datetime import datetime
 from pytz import timezone
 
@@ -14,7 +13,7 @@ class Timer:
         연령들을 생년월일로 바꾼 후,
         성별(남: 1, 여: 2)과 결합해 반환하는 함수
         """
-        genders = (1, 2)
+        genders = ('남', '여')
         birthdate_list = [
             (age, self.convert_age_to_birthdate(age, date_format))
             for age in age_list
