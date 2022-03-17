@@ -9,7 +9,19 @@ from . import locators
 
 
 class LinaDirectDentalPage(BasePage):
-    def scrape(self, input_pairs):
+    def __init__(self, driver, option: str):
+        """
+        option
+        - 'standard': 기본 보장형
+        - 'premium': 집중 보장형
+        """
+        super().__init__(driver)
+        if option == 'standard':
+            self.cost_locator = locators.STANDARD_PLAN_COST
+        else:
+            self.cost_locator = locators.PREMIUM_PLAN_COST
+
+    def scrape(self, input_pairs, ):
         self.go_to_url(elements.URL)
 
         download_folder = self.make_directory(DOWNLOAD_FOLDER)
@@ -27,6 +39,7 @@ class LinaDirectDentalPage(BasePage):
                 csv_writer.writerow([age, gender, cost])
             except NotEligibleAgeError as e:
                 print(e)
+                break
             except Exception as e:
                 print(e)
         
@@ -41,10 +54,10 @@ class LinaDirectDentalPage(BasePage):
         birthday_input.clear()
         birthday_input.send_keys(birthdate)
 
-        if gender == 1:
+        if gender == '남':
             self.wait_to_click(locators.MALE_BUTTON)
             select_button = self.find(locators.MALE_BUTTON)
-        elif gender == 2:
+        elif gender == '여':
             self.wait_to_click(locators.FEMALE_BUTTON)
             select_button = self.find(locators.FEMALE_BUTTON)
         select_button.click()
@@ -60,19 +73,18 @@ class LinaDirectDentalPage(BasePage):
         """
         try:
             alert = self.driver.switch_to.alert
+        except:
+            return
+        else:
             alert.accept()
             raise NotEligibleAgeError('', age)
-        except:
-            pass
         
     def __gather_data(self):
         """
         데이터를 찾아서 반환.
         - 각 보험마다 따로 구현 필요.
         """
-        cost = self.find(locators.STANDARD_PLAN_COST).text
-        # cost = self.find(locators.PREMIUM_PLAN_COST).text
+        cost = self.find(self.cost_locator).text
         data = int(cost.replace(',', ''))
 
         return data
-    
